@@ -24,6 +24,8 @@ public class Account extends EntityBase {
 
     private String accountNumber;
 
+    private String accountName;
+
     private Currency currency;
 
     @Embedded

@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AccountTransaction {
+public class AccountTransactionRequest {
 
     @Valid
     private MoneyDTO value;
