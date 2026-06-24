@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -19,8 +20,13 @@ public class TransactionRequest {
     @NotNull(message = "User ID is required")
     private UUID userId;
 
+    @NotNull(message = "Primary/source value cannot be null")
     @Valid
     private MoneyDto value;
+
+    private MoneyDto targetValue;
+
+    private BigDecimal exchangeRate;
 
     @NotNull(message = "Transaction type is required")
     private TransactionType transactionType;

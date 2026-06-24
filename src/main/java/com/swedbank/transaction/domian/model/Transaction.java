@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -29,9 +30,14 @@ public class Transaction extends EntityBase {
     @Embedded
     private Money value;
 
+    @Embedded
+    private Money targetValue;
+
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
     private String reference;
+
+    private BigDecimal exchangeRate;
 
 }
