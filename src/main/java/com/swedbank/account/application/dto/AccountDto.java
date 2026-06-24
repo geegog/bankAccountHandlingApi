@@ -16,8 +16,6 @@ public class AccountDto extends BaseDto {
 
     private String accountName;
 
-    private Currency currency;
-
     private MoneyDto balance;
 
     private UserDto user;

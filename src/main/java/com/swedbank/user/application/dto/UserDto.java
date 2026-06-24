@@ -21,5 +21,6 @@ public class UserDto extends BaseDto {
 
     @NotNull(message = "Email is required")
     @Email(message = "Please provide a valid email address")
+    @Size(max = 255, message = "Email must not exceed 255 characters")
     private String email;
 }

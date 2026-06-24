@@ -2,6 +2,9 @@ package com.swedbank.transaction.domian.model;
 
 import com.swedbank.common.domian.EntityBase;
 import com.swedbank.common.domian.Money;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,9 +31,17 @@ public class Transaction extends EntityBase {
     private UUID userId;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "amount", column = @Column(name = "source_amount", precision = 19, scale = 2)),
+            @AttributeOverride(name = "currency", column = @Column(name = "source_currency", length = 3))
+    })
     private Money value;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "amount", column = @Column(name = "target_amount", precision = 19, scale = 2)),
+            @AttributeOverride(name = "currency", column = @Column(name = "target_currency", length = 3))
+    })
     private Money targetValue;
 
     @Enumerated(EnumType.STRING)

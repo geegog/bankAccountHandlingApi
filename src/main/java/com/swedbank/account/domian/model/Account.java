@@ -12,8 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Currency;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,8 +23,6 @@ public class Account extends EntityBase {
     private String accountNumber;
 
     private String accountName;
-
-    private Currency currency;
 
     @Embedded
     private Money balance;

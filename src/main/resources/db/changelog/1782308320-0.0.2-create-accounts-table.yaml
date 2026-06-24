@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0.0.2
+      author: onuchenyo.idoko@gmail.com
+      changes:
+        - createTable:
+            tableName: accounts
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: account_number
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_name
+                  type: varchar(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: varchar(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: decimal(19, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_accounts_user
+                    references: users(id)
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated
+                  type: timestamp
+                  constraints:
+                    nullable: true
+        - addUniqueConstraint:
+            constraintName: unique_user_account
+            tableName: accounts
+            columnNames: account_number, user_id

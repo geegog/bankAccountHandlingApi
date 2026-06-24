@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0.0.1
+      author: onuchenyo.idoko@gmail.com
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated
+                  type: timestamp
+                  constraints:
+                    nullable: true
+        - addUniqueConstraint:
+            constraintName: unique_email
+            tableName: users
+            columnNames: email

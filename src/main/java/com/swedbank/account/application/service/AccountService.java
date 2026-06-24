@@ -14,6 +14,7 @@ import com.swedbank.common.domian.Money;
 import com.swedbank.transaction.application.dto.TransactionRequest;
 import com.swedbank.transaction.application.service.TransactionService;
 import com.swedbank.transaction.domian.model.TransactionType;
+import com.swedbank.user.application.dto.UserAccountRequest;
 import com.swedbank.user.application.dto.UserDto;
 import com.swedbank.user.application.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,7 @@ public class AccountService {
     private final ModelMapper modelMapper;
 
     private Account getAccountByNumberAndUser(String accountNumber, String userEmail) {
-        return accountRepository.finByAccountNumberAndUser_Email(accountNumber, userEmail)
+        return accountRepository.findByAccountNumberAndUser_Email(accountNumber, userEmail)
                 .orElseThrow(() -> new RuntimeException("Account not found for user"));
     }
 
@@ -55,7 +56,7 @@ public class AccountService {
 
         var account = getAccountByNumberAndUser(accountTransactionRequest.getAccountNumber(), user.getEmail());
 
-        validateCurrency(account.getCurrency(), accountTransactionRequest.getValue().getCurrency());
+        validateCurrency(account.getBalance().getCurrency(), accountTransactionRequest.getValue().getCurrency());
 
         var newBalance = account.getBalance().getAmount() != null ? account.getBalance().getAmount().add(accountTransactionRequest.getValue().getAmount()) : null;
         account.setBalance(Money.of(newBalance, account.getBalance().getCurrency()));
@@ -102,7 +103,7 @@ public class AccountService {
 
         var account = getAccountByNumberAndUser(accountTransactionRequest.getAccountNumber(), user.getEmail());
 
-        validateCurrency(account.getCurrency(), accountTransactionRequest.getValue().getCurrency());
+        validateCurrency(account.getBalance().getCurrency(), accountTransactionRequest.getValue().getCurrency());
         validateBalanceAmount(account.getBalance().getAmount(), accountTransactionRequest.getValue().getAmount());
 
         var newBalance = account.getBalance().getAmount().subtract(accountTransactionRequest.getValue().getAmount());
@@ -138,7 +139,7 @@ public class AccountService {
     public void currencyExchange(ExchangeRequest exchangeRequest, String email) {
 
         var sourceAccount = getAccountByNumberAndUser(exchangeRequest.getSourceAccountNumber(), email);
-        validateCurrency(sourceAccount.getCurrency(), exchangeRequest.getValue().getCurrency());
+        validateCurrency(sourceAccount.getBalance().getCurrency(), exchangeRequest.getValue().getCurrency());
         validateBalanceAmount(sourceAccount.getBalance().getAmount(), exchangeRequest.getValue().getAmount());
 
         // debit source
@@ -149,7 +150,7 @@ public class AccountService {
         withdrawMoney(sourceRequest, email);
 
         var destinationAccount = getAccountByNumberAndUser(exchangeRequest.getDestinationAccountNumber(), email);
-        var valueAfterConversion = currencyConverter.convert(sourceAccount.getCurrency().getCurrencyCode(), destinationAccount.getCurrency().getCurrencyCode(), exchangeRequest.getValue().getAmount());
+        var valueAfterConversion = currencyConverter.convert(sourceAccount.getBalance().getCurrency(), destinationAccount.getBalance().getCurrency(), exchangeRequest.getValue().getAmount());
 
 
         // credit source
@@ -178,6 +179,13 @@ public class AccountService {
         account.setAccountNumber(AccountNumberGenerator.generateAccountNumber());
         accountRepository.save(account);
         return modelMapper.map(account, AccountDto.class);
+    }
+
+    @Transactional
+    public void createUserAccount(UserAccountRequest userAccountRequest) {
+        userService.createUser(userAccountRequest.getUser());
+
+        createAccount(userAccountRequest.getCreateAccount());
     }
 
 }
