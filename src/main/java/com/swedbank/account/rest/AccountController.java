@@ -2,18 +2,19 @@ package com.swedbank.account.rest;
 
 import com.swedbank.account.application.dto.AccountDto;
 import com.swedbank.account.application.dto.AccountTransactionRequest;
+import com.swedbank.account.application.dto.ExchangeRequest;
 import com.swedbank.account.application.service.AccountService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,12 +24,37 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping(value = "/deposit")
-    public ResponseEntity<AccountDto> getUserAssociationByIdsPair(
-            @RequestBody AccountTransactionRequest accountTransactionRequest,
+    public ResponseEntity<AccountDto> addMoneyToAccount(
+            @RequestBody @Valid AccountTransactionRequest accountTransactionRequest,
             @AuthenticationPrincipal User user
     ) {
         return ResponseEntity.ok().body(
                 accountService.depositMoney(accountTransactionRequest, user.getUsername()));
+    }
+
+    @PostMapping(value = "/withdraw")
+    public ResponseEntity<AccountDto> removeMoneyFromAccount(
+            @RequestBody @Valid AccountTransactionRequest accountTransactionRequest,
+            @AuthenticationPrincipal User user
+    ) {
+        return ResponseEntity.ok().body(
+                accountService.withdrawMoney(accountTransactionRequest, user.getUsername()));
+    }
+
+    @PostMapping(value = "/exchange")
+    public ResponseEntity<?> moveMoneyBetweenAccounts(
+            @RequestBody @Valid ExchangeRequest exchangeRequest,
+            @AuthenticationPrincipal User user
+    ) {
+        accountService.currencyExchange(exchangeRequest, user.getUsername());
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/{accountNumber}/balance")
+    public ResponseEntity<AccountDto> getAccountBalance(
+            @AuthenticationPrincipal User user,
+            @PathVariable String accountNumber) {
+        return ResponseEntity.ok(accountService.getAccountBalance(accountNumber, user.getUsername()));
     }
 
 }

@@ -1,13 +1,18 @@
 package com.swedbank.transaction.application.service;
 
 import com.swedbank.common.domian.Money;
+import com.swedbank.transaction.application.dto.PagedResult;
 import com.swedbank.transaction.application.dto.TransactionDto;
 import com.swedbank.transaction.application.dto.TransactionRequest;
+import com.swedbank.transaction.application.dto.TransactionSearch;
 import com.swedbank.transaction.domian.model.Transaction;
 import com.swedbank.transaction.domian.repository.TransactionRepository;
+import com.swedbank.user.application.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +25,7 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
 
     private final ModelMapper modelMapper;
+    private final UserService userService;
 
     private void saveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
@@ -36,11 +42,19 @@ public class TransactionService {
         transaction.setValue(Money.of(transactionRequest.getValue().getAmount(), transactionRequest.getValue().getCurrency()));
     }
 
-    public List<TransactionDto> getTransactions(String accountNumber, UUID userId) {
+    public PagedResult<TransactionDto> getTransactions(TransactionSearch transactionSearch, String accountNumber, String email) {
 
-        var transactions = transactionRepository.findByAccountNumberAndUserId(accountNumber, userId);
+        var user = userService.getUserByEmail(email);
 
-        return modelMapper.map(transactions, new TypeToken<List<TransactionDto>>() {}.getType());
+        Pageable pageable = PageRequest.of(transactionSearch.getPage(), transactionSearch.getSize());
+
+        var transactionPage = transactionRepository.findByAccountNumberAndUserId(accountNumber, user.getId(), pageable);
+
+        return modelMapper.map(
+                transactionPage,
+                new TypeToken<PagedResult<TransactionDto>>() {}.getType()
+        );
+
     }
 
 }

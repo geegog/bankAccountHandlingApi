@@ -99,7 +99,7 @@ public class AccountService {
 
     @SimulateExternalLog
     @Transactional
-    public void withdrawMoney(AccountTransactionRequest accountTransactionRequest, String email) {
+    public AccountDto withdrawMoney(AccountTransactionRequest accountTransactionRequest, String email) {
 
         var user = userService.getUserByEmail(email);
 
@@ -111,17 +111,19 @@ public class AccountService {
         var newBalance = account.getBalance().getAmount().subtract(accountTransactionRequest.getValue().getAmount());
         account.setBalance(Money.of(newBalance, account.getBalance().getCurrency()));
 
-        accountRepository.save(account);
+        var updatedAccount = accountRepository.save(account);
 
         logTransaction(accountTransactionRequest, user, TransactionType.DEBIT);
 
+        return modelMapper.map(updatedAccount, AccountDto.class);
+
     }
 
-    public AccountDto getAccountBalance(AccountTransactionRequest accountTransactionRequest, String email) {
+    public AccountDto getAccountBalance(String accountNumber, String email) {
 
         var user = userService.getUserByEmail(email);
 
-        var account = getAccountByNumberAndUser(accountTransactionRequest.getAccountNumber(), user.getEmail());
+        var account = getAccountByNumberAndUser(accountNumber, user.getEmail());
 
         return modelMapper.map(account, AccountDto.class);
 
