@@ -1,10 +1,10 @@
-package com.swedbank.bankaccounthandlingapi;
+package com.swedbank.bankservice.account.rest.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BankAccountHandlingApiApplicationTests {
+class AccountControllerTests {
 
 	@Test
 	void contextLoads() {

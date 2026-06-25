@@ -10,6 +10,9 @@ import com.swedbank.account.domian.model.Account;
 import com.swedbank.account.domian.model.CreateAccountRequest;
 import com.swedbank.account.domian.repository.AccountRepository;
 import com.swedbank.common.application.Dto.MoneyDto;
+import com.swedbank.common.application.exception.InsufficientException;
+import com.swedbank.common.application.exception.MismatchException;
+import com.swedbank.common.application.exception.NotFoundException;
 import com.swedbank.common.domian.Money;
 import com.swedbank.transaction.application.dto.TransactionRequest;
 import com.swedbank.transaction.application.service.TransactionService;
@@ -42,7 +45,7 @@ public class AccountService {
 
     private Account getAccountByNumberAndUser(String accountNumber, String userEmail) {
         return accountRepository.findByAccountNumberAndUser_Email(accountNumber, userEmail)
-                .orElseThrow(() -> new RuntimeException("Account not found for user"));
+                .orElseThrow(() -> new NotFoundException("Account not found for user"));
     }
 
     private Set<Account> getAccountsByUser(String userEmail) {
@@ -87,13 +90,13 @@ public class AccountService {
     private static void validateCurrency(Currency accountCurrency, Currency suppliedCurrency) {
 
         if ( suppliedCurrency != accountCurrency) {
-            throw new RuntimeException("Transaction currency must match the account currency " + accountCurrency);
+            throw new MismatchException("Transaction currency must match the account currency " + accountCurrency);
         }
     }
 
     private static void validateBalanceAmount(BigDecimal accountBalanceValue, BigDecimal transactionValue) {
         if (accountBalanceValue == null || accountBalanceValue.compareTo(transactionValue) < 0) {
-            throw new RuntimeException("Insufficient balance");
+            throw new InsufficientException("Insufficient balance");
         }
     }
 

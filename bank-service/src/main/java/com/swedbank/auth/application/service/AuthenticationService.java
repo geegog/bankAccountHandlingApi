@@ -5,6 +5,7 @@ import com.swedbank.auth.application.config.JwtConfigParams;
 import com.swedbank.auth.application.dto.AuthRequest;
 import com.swedbank.auth.application.dto.AuthResult;
 import com.swedbank.auth.application.util.JwtUtil;
+import com.swedbank.common.application.exception.UnauthenticatedException;
 import com.swedbank.user.application.dto.UserDto;
 import com.swedbank.user.application.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AuthenticationService {
         try {
             userDto = userService.verifyUser(request.username(), request.password());
         } catch (Exception e) {
-            throw new RuntimeException("Invalid credentials");
+            throw new UnauthenticatedException("Invalid credentials");
         }
         String accessToken = JwtUtil.generateToken(
             userDto,

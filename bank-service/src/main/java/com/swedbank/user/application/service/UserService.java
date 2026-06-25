@@ -1,5 +1,7 @@
 package com.swedbank.user.application.service;
 
+import com.swedbank.common.application.exception.MismatchException;
+import com.swedbank.common.application.exception.NotFoundException;
 import com.swedbank.user.application.dto.UserDto;
 import com.swedbank.user.domain.model.User;
 import com.swedbank.user.domain.repository.UserRepository;
@@ -20,7 +22,7 @@ public class UserService {
 
     private User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public UserDto getUserByEmail(String email) {
@@ -38,7 +40,7 @@ public class UserService {
         if (passwordEncoder.matches(password, user.getPassword())) {
             return modelMapper.map(user, UserDto.class);
         } else {
-            throw new RuntimeException("Password mismatch");
+            throw new MismatchException("Password mismatch");
         }
     }
 
