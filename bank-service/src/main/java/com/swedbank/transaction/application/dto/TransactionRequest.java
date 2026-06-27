@@ -26,6 +26,14 @@ public class TransactionRequest {
 
     private MoneyDto targetValue;
 
+    @NotNull(message = "Primary/source account balance cannot be null")
+    @Valid
+    private MoneyDto balance;
+
+    private MoneyDto targetBalance;
+
+    private String targetAccountNumber;
+
     private BigDecimal exchangeRate;
 
     @NotNull(message = "Transaction type is required")

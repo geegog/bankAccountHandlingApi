@@ -36,10 +36,28 @@ public class TransactionService {
         transaction.setTransactionType(transactionRequest.getTransactionType());
         transaction.setUserId(transactionRequest.getUserId());
         transaction.setAccountNumber(transactionRequest.getAccountNumber());
+        transaction.setBalance(Money.of(transactionRequest.getBalance().getAmount(),
+                transactionRequest.getBalance().getCurrency()));
         if (transactionRequest.getReference() != null) {
             transaction.setReference(transactionRequest.getReference());
         }
-        transaction.setValue(Money.of(transactionRequest.getValue().getAmount(), transactionRequest.getValue().getCurrency()));
+        if (transactionRequest.getTargetValue() != null) {
+            transaction.setTargetValue(Money.of(transactionRequest.getTargetValue().getAmount(),
+                    transactionRequest.getTargetValue().getCurrency()));
+        }
+        if (transactionRequest.getTargetAccountNumber() != null) {
+            transaction.setTargetAccountNumber(transactionRequest.getTargetAccountNumber());
+        }
+        if (transactionRequest.getExchangeRate() != null) {
+            transaction.setExchangeRate(transactionRequest.getExchangeRate());
+        }
+        if (transactionRequest.getTargetBalance()  != null) {
+            transaction.setTargetBalance(Money.of(transactionRequest.getTargetBalance().getAmount(),
+                    transactionRequest.getTargetBalance().getCurrency()));
+        }
+        transaction.setValue(Money.of(transactionRequest.getValue().getAmount(),
+                transactionRequest.getValue().getCurrency()));
+        saveTransaction(transaction);
     }
 
     public PagedResult<TransactionDto> getTransactions(TransactionSearch transactionSearch, String accountNumber, String email) {

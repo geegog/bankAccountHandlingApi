@@ -69,21 +69,26 @@ public class AccountService {
         var newBalance = account.getBalance().getAmount() != null ? account.getBalance().getAmount().add(accountTransactionRequest.getValue().getAmount()) : null;
         account.setBalance(Money.of(newBalance, account.getBalance().getCurrency()));
 
-        var updateAccount = accountRepository.save(account);
+        var updatedAccount = accountRepository.save(account);
 
-        logTransaction(accountTransactionRequest, user, TransactionType.CREDIT);
+        logTransaction(accountTransactionRequest, user, TransactionType.CREDIT,
+                MoneyDto.builder().amount(updatedAccount.getBalance().getAmount())
+                        .currency(updatedAccount.getBalance().getCurrency())
+                        .build());
 
-        return modelMapper.map(updateAccount, AccountDto.class);
+        return modelMapper.map(updatedAccount, AccountDto.class);
 
     }
 
-    private void logTransaction(AccountTransactionRequest accountTransactionRequest, UserDto user, TransactionType transactionType) {
+    private void logTransaction(AccountTransactionRequest accountTransactionRequest, UserDto user,
+                                TransactionType transactionType, MoneyDto balance) {
         TransactionRequest transactionRequest = new TransactionRequest();
         transactionRequest.setAccountNumber(accountTransactionRequest.getAccountNumber());
         transactionRequest.setUserId(user.getId());
         transactionRequest.setReference(accountTransactionRequest.getReference());
         transactionRequest.setValue(accountTransactionRequest.getValue());
         transactionRequest.setTransactionType(transactionType);
+        transactionRequest.setBalance(balance);
 
         transactionService.recordTransaction(transactionRequest);
     }
@@ -121,7 +126,10 @@ public class AccountService {
 
         var updatedAccount = accountRepository.save(account);
 
-        logTransaction(accountTransactionRequest, user, TransactionType.DEBIT);
+        logTransaction(accountTransactionRequest, user, TransactionType.DEBIT,
+                MoneyDto.builder().amount(updatedAccount.getBalance().getAmount())
+                        .currency(updatedAccount.getBalance().getCurrency())
+                        .build());
 
         return modelMapper.map(updatedAccount, AccountDto.class);
 
@@ -174,11 +182,14 @@ public class AccountService {
 
         TransactionRequest transactionRequest = new TransactionRequest();
         transactionRequest.setAccountNumber(exchangeRequest.getSourceAccountNumber());
+        transactionRequest.setTargetAccountNumber(exchangeRequest.getDestinationAccountNumber());
         transactionRequest.setUserId(userService.getUserByEmail(email).getId());
         transactionRequest.setValue(exchangeRequest.getValue());
         transactionRequest.setTransactionType(TransactionType.EXCHANGE);
         transactionRequest.setTargetValue(targetValue);
         transactionRequest.setExchangeRate(valueAfterConversion.effectiveRate());
+        transactionRequest.setBalance(sourceAfterWithdrawal.getBalance());
+        transactionRequest.setTargetBalance(targetAfterDeposit.getBalance());
 
         logTransaction(transactionRequest);
 

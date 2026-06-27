@@ -18,6 +18,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: target_account_number
+                  type: varchar(20)
+                  constraints:
+                    nullable: true
+              - column:
                   name: user_id
                   type: uuid
                   constraints:
@@ -43,6 +48,26 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
+                  name: source_account_currency
+                  type: varchar(3)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: source_account_balance
+                  type: decimal(19, 2)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: target_account_currency
+                  type: varchar(3)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: target_account_balance
+                  type: decimal(19, 2)
+                  constraints:
+                    nullable: true
+              - column:
                   name: transaction_type
                   type: varchar(20)
                   constraints:
@@ -54,7 +79,7 @@ databaseChangeLog:
                     nullable: true
               - column:
                   name: exchange_rate
-                  type: decimal(3, 2)
+                  type: decimal(16, 6)
                   constraints:
                     nullable: true
               - column:

@@ -28,6 +28,8 @@ public class Transaction extends EntityBase {
 
     private String accountNumber;
 
+    private String targetAccountNumber;
+
     private UUID userId;
 
     @Embedded
@@ -43,6 +45,20 @@ public class Transaction extends EntityBase {
             @AttributeOverride(name = "currency", column = @Column(name = "target_currency", length = 3))
     })
     private Money targetValue;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "amount", column = @Column(name = "source_account_balance", precision = 19, scale = 2)),
+            @AttributeOverride(name = "currency", column = @Column(name = "source_account_currency", length = 3))
+    })
+    private Money balance;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "amount", column = @Column(name = "target_account_balance", precision = 19, scale = 2)),
+            @AttributeOverride(name = "currency", column = @Column(name = "target_account_currency", length = 3))
+    })
+    private Money targetBalance;
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
