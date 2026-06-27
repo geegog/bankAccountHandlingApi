@@ -25,7 +25,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
+import java.util.Set;
 
+import static com.swedbank.bankservice.common.utils.ApiUtil.mockGetApi;
 import static com.swedbank.bankservice.common.utils.ApiUtil.mockPostApi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -326,5 +328,41 @@ class AccountControllerTests extends BaseIntegrationTest {
 		ExchangeResponse responseUsd = objectMapper.readValue(resultUsd.getResponse().getContentAsString(), ExchangeResponse.class);
 		assertThat(responseUsd.getSourceAccount().getBalance().getAmount()).isEqualByComparingTo("3500.00");
 		assertThat(responseUsd.getDestinationAccount().getBalance().getAmount()).isEqualByComparingTo("500.00");
+	}
+
+	@Test
+	@DisplayName("Should display account details including account balance")
+	void accountDetailTest() throws Exception {
+		var email = "user5@gmail.com";
+		var accounts = performBulkAccountCreation(email);
+		AccountTransactionRequest depositRequest = new AccountTransactionRequest();
+		depositRequest.setAccountNumber(accounts.get(0).getAccountNumber());
+		depositRequest.setValue(MoneyDto.builder()
+				.amount(new BigDecimal("45.54"))
+				.currency(Currency.getInstance("USD"))
+				.build());
+		depositRequest.setReference("Initial Deposit");
+
+		var payload = objectMapper.writeValueAsString(depositRequest);
+
+		var result = mockPostApi(mockMvc, payload, "/account/deposit", createTestUser(email), null)
+				.andExpect(status().isOk())
+				.andReturn();
+
+		AccountDto updatedAccount = objectMapper.readValue(result.getResponse().getContentAsString(), AccountDto.class);
+
+		assertThat(updatedAccount.getBalance().getAmount()).isEqualByComparingTo("45.54");
+		assertThat(updatedAccount.getBalance().getCurrency()).isEqualTo(Currency.getInstance("USD"));
+
+		var accountsResult = mockGetApi(mockMvc, "/account/all", createTestUser(email), null, null)
+				.andExpect(status().isOk())
+				.andReturn();
+
+		Set<AccountDto> allUserAccounts = objectMapper.readValue(accountsResult.getResponse().getContentAsString(),
+				objectMapper.getTypeFactory().constructCollectionType(Set.class, AccountDto.class));
+
+		assertThat(allUserAccounts.size()).isEqualTo(4);
+
+
 	}
 }

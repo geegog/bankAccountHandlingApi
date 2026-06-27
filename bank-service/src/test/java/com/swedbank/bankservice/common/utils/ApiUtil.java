@@ -47,7 +47,6 @@ public class ApiUtil {
 
     public static ResultActions mockGetApi(
         MockMvc mockMvc,
-        Integer port,
         String url,
         UserDto user,
         MultiValueMap<String, String> queryParams,
