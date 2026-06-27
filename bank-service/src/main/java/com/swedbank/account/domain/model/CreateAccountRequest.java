@@ -1,4 +1,4 @@
-package com.swedbank.account.domian.model;
+package com.swedbank.account.domain.model;
 
 import com.swedbank.account.application.annotation.AllowedCurrency;
 import jakarta.validation.constraints.NotNull;

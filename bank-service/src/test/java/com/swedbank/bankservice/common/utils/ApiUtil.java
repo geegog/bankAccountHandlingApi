@@ -12,7 +12,6 @@ public class ApiUtil {
 
     public static ResultActions mockPostApi(
         MockMvc mockMvc,
-        Integer port,
         String content,
         String url,
         UserDto user,

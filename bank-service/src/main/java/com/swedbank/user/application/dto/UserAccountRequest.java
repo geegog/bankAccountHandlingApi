@@ -1,6 +1,6 @@
 package com.swedbank.user.application.dto;
 
-import com.swedbank.account.domian.model.CreateAccountRequest;
+import com.swedbank.account.domain.model.CreateAccountRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,7 +19,7 @@ public class UserAccountRequest {
 
     @Valid
     @NotNull(message = "Create accounts cannot be null")
-    @Size(min = 1, max = 3, message = "The request must contain between 1 and 3 account applications.")
+    @Size(min = 1, max = 4, message = "The request must contain between 1 and 4 account applications.")
     private List<CreateAccountRequest> createAccounts;
 
 }

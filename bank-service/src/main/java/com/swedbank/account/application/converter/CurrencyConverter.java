@@ -30,9 +30,11 @@ public class CurrencyConverter {
 
         int scale = toCurrency == Currency.getInstance("VND") ? 0 : 2;
         BigDecimal convertedValue = amountInEur.multiply(rateFromEur).setScale(scale, RoundingMode.HALF_UP);
-        Money convertedMoney = Money.of(convertedValue, Currency.getInstance(toCurrency.getCurrencyCode().toUpperCase()));
+        Money convertedMoney = Money.of(convertedValue, toCurrency);
 
-        BigDecimal effectiveRate = convertedValue.divide(amount, 6, RoundingMode.HALF_UP);
+        BigDecimal effectiveRate = (amount.compareTo(BigDecimal.ZERO) == 0)
+                ? rateFromEur.divide(rateToEur, 6, RoundingMode.HALF_UP)
+                : convertedValue.divide(amount, 6, RoundingMode.HALF_UP);
 
         return new ConversionResult(originalMoney, convertedMoney, effectiveRate);
     }

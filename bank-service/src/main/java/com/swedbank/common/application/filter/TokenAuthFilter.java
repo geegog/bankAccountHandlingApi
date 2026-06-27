@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.User;
@@ -17,11 +17,7 @@ import org.springframework.security.web.context.RequestAttributeSecurityContextR
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class TokenAuthFilter extends OncePerRequestFilter {
 
@@ -48,21 +44,23 @@ public class TokenAuthFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String header = request.getHeader(headerValue);
         if (null != header && header.startsWith(prefix)) {
-            String token = header.replace(prefix, "");
+            String token = header.replace(prefix, "").trim();
             try {
                 Claims claims = JwtUtil.getAllClaimsFromToken(token, secret);
                 String username = claims.getSubject();
                 var isTokenValid = JwtUtil.validateToken(token, username, secret);
                 if (username != null && isTokenValid) {
+                    User principal = new User(username, "", List.of());
                     UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        new User(username, "", List.of()),
-                        null
+                            principal,
+                            null,
+                            principal.getAuthorities()
                     );
-                    requestAttributeSecurityContextRepository.saveContext(
-                        new SecurityContextImpl(auth),
-                        request,
-                        response
-                    );
+                    SecurityContext context = new SecurityContextImpl(auth);
+
+                    SecurityContextHolder.setContext(context);
+
+                    requestAttributeSecurityContextRepository.saveContext(context, request, response);
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage());

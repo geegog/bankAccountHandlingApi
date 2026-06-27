@@ -3,6 +3,7 @@ package com.swedbank.account.rest;
 import com.swedbank.account.application.dto.AccountDto;
 import com.swedbank.account.application.dto.AccountTransactionRequest;
 import com.swedbank.account.application.dto.ExchangeRequest;
+import com.swedbank.account.application.dto.ExchangeResponse;
 import com.swedbank.account.application.service.AccountService;
 import com.swedbank.user.application.dto.UserAccountRequest;
 import jakarta.validation.Valid;
@@ -47,12 +48,11 @@ public class AccountController {
     }
 
     @PostMapping(value = "/exchange")
-    public ResponseEntity<?> moveMoneyBetweenAccounts(
+    public ResponseEntity<ExchangeResponse> moveMoneyBetweenAccounts(
             @RequestBody @Valid ExchangeRequest exchangeRequest,
             @AuthenticationPrincipal User user
     ) {
-        accountService.currencyExchange(exchangeRequest, user.getUsername());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(accountService.currencyExchange(exchangeRequest, user.getUsername()));
     }
 
     @PostMapping(value = "/user")

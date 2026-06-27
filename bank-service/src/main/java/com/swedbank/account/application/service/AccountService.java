@@ -4,11 +4,12 @@ import com.swedbank.account.application.converter.CurrencyConverter;
 import com.swedbank.account.application.dto.AccountDto;
 import com.swedbank.account.application.dto.AccountTransactionRequest;
 import com.swedbank.account.application.dto.ExchangeRequest;
+import com.swedbank.account.application.dto.ExchangeResponse;
 import com.swedbank.account.application.infrastructure.aop.SimulateExternalLog;
 import com.swedbank.account.application.util.AccountNumberGenerator;
-import com.swedbank.account.domian.model.Account;
-import com.swedbank.account.domian.model.CreateAccountRequest;
-import com.swedbank.account.domian.repository.AccountRepository;
+import com.swedbank.account.domain.model.Account;
+import com.swedbank.account.domain.model.CreateAccountRequest;
+import com.swedbank.account.domain.repository.AccountRepository;
 import com.swedbank.common.application.Dto.MoneyDto;
 import com.swedbank.common.application.exception.InsufficientException;
 import com.swedbank.common.application.exception.MismatchException;
@@ -31,7 +32,6 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -148,7 +148,7 @@ public class AccountService {
     }
 
     @Transactional
-    public void currencyExchange(ExchangeRequest exchangeRequest, String email) {
+    public ExchangeResponse currencyExchange(ExchangeRequest exchangeRequest, String email) {
 
         var sourceAccount = getAccountByNumberAndUser(exchangeRequest.getSourceAccountNumber(), email);
         validateCurrency(sourceAccount.getBalance().getCurrency(), exchangeRequest.getValue().getCurrency());
@@ -159,7 +159,7 @@ public class AccountService {
         sourceRequest.setAccountNumber(sourceAccount.getAccountNumber());
         sourceRequest.setValue(exchangeRequest.getValue());
 
-        withdrawMoney(sourceRequest, email);
+        var sourceAfterWithdrawal = withdrawMoney(sourceRequest, email);
 
         var destinationAccount = getAccountByNumberAndUser(exchangeRequest.getDestinationAccountNumber(), email);
         var valueAfterConversion = currencyConverter.convert(sourceAccount.getBalance().getCurrency(), destinationAccount.getBalance().getCurrency(), exchangeRequest.getValue().getAmount());
@@ -170,7 +170,7 @@ public class AccountService {
         AccountTransactionRequest destinationRequest = new AccountTransactionRequest();
         destinationRequest.setAccountNumber(exchangeRequest.getDestinationAccountNumber());
         destinationRequest.setValue(targetValue);
-        depositMoney(destinationRequest, email);
+        var targetAfterDeposit = depositMoney(destinationRequest, email);
 
         TransactionRequest transactionRequest = new TransactionRequest();
         transactionRequest.setAccountNumber(exchangeRequest.getSourceAccountNumber());
@@ -181,6 +181,12 @@ public class AccountService {
         transactionRequest.setExchangeRate(valueAfterConversion.effectiveRate());
 
         logTransaction(transactionRequest);
+
+        return ExchangeResponse.builder()
+                .destinationAccount(targetAfterDeposit)
+                .sourceAccount(sourceAfterWithdrawal)
+                .conversionResult(valueAfterConversion)
+                .build();
 
     }
 

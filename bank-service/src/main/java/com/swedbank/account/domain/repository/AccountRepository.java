@@ -1,6 +1,6 @@
-package com.swedbank.account.domian.repository;
+package com.swedbank.account.domain.repository;
 
-import com.swedbank.account.domian.model.Account;
+import com.swedbank.account.domain.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

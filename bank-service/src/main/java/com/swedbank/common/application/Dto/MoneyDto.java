@@ -26,7 +26,6 @@ public class MoneyDto {
     private BigDecimal amount;
 
     @NotNull(message = "Currency is required")
-    @Pattern(regexp = "^[A-Z]{3}$", message = "Currency must be a 3-letter ISO-4217 code")
     private Currency currency;
 
     public static MoneyDto toDto(Money money) {
