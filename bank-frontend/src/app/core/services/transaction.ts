@@ -25,4 +25,10 @@ export class Transaction {
       body,
     );
   }
+
+  getTransactionDetails(id: string): Observable<ITransaction> {
+    return this.http.get<ITransaction>(
+      `${this.apiUrl}/${id}`
+    );
+  }
 }

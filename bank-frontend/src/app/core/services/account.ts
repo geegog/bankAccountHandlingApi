@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface IBase {
@@ -23,6 +23,7 @@ export interface IBankAccount extends IBase {
   accountNumber: string;
   accountName: string;
   balance: IMoney;
+  user: IUser
 }
 
 export interface ITransaction extends IBase {
@@ -33,7 +34,7 @@ export interface ITransaction extends IBase {
   targetValue: IMoney;
   balance: IMoney;
   targetBalance: IMoney;
-  transactionType: 'CREDIT' | 'DEBIT';
+  transactionType: 'CREDIT' | 'DEBIT' | 'EXCHANGE';
   reference: string;
   exchangeRate: string;
 }
@@ -47,11 +48,6 @@ export interface IPagedResult<T> {
   size: number;
   last: boolean;
   first: boolean;
-}
-
-export interface IChartPoint {
-  date: string;
-  balance: number;
 }
 
 @Injectable({

@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { Account, IBankAccount } from '../../../../core/services/account';
+import { Account, IBankAccount, IUser } from '../../../../core/services/account';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthStatus } from '../../../../core/services/auth-status';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +15,10 @@ export class Home implements OnInit {
   private accountService = inject(Account);
   private cdr = inject(ChangeDetectorRef);
 
+  public authStatusService = inject(AuthStatus);
+
   accounts: IBankAccount[] = [];
+  user: IUser | undefined;
   isLoading = true;
 
   ngOnInit(): void {
@@ -22,6 +26,9 @@ export class Home implements OnInit {
 
     this.accountService.getAccounts().subscribe({
       next: (data) => {
+        if (data && data.length > 0) {
+          this.user = data[0].user;
+        }
         this.accounts = data;
         this.isLoading = false;
 

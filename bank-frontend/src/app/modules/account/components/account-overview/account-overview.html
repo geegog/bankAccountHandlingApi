@@ -37,7 +37,7 @@
               onmouseover="this.style.backgroundColor='#f8f9fa'"
               onmouseout="this.style.backgroundColor='transparent'"
             >
-              <td style="padding: 12px; color: #7f8c8d;">{{ tx.created }}</td>
+              <td style="padding: 12px; color: #7f8c8d;">{{ tx.created | date:'medium' }}</td>
               <td style="padding: 12px; font-weight: 500;">{{ tx.reference || '' }}</td>
               <td style="padding: 12px; text-align: right; font-weight: bold;"
                   [style.color]="tx.transactionType === 'CREDIT' ? '#27ae60' : '#c0392b'">

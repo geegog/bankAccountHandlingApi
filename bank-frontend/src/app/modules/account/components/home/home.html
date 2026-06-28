@@ -1,19 +1,27 @@
 <div style="padding: 40px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1100px; margin: 0 auto;">
 
-  <div style="border-bottom: 2px solid #eaeded; padding-bottom: 15px; margin-bottom: 30px;">
-    <h1 style="color: #2c3e50; margin: 0; font-size: 2rem;">Global Banking Portal</h1>
-    <p style="color: #7f8c8d; margin: 5px 0 0 0;">Welcome back! Select an account to review transaction histories.</p>
-  </div>
-
-  @if (isLoading) {
-    <div style="padding: 30px; text-align: center; color: #7f8c8d; font-style: italic;">
-      <p style="font-size: 1.1rem;">Securing connection and loading your accounts...</p>
+  @if (authStatusService.errorMessage()) {
+    <div style="padding: 40px; text-align: center; color: #7f8c8d; margin-top: 10px;">
+      <p style="font-size: 1.1rem; font-style: italic;">Please resolve the authentication error above to view your portal dashboard.</p>
     </div>
-  } @else {
+  }
+
+  @else if (isLoading) {
+    <div style="padding: 60px; text-align: center; color: #7f8c8d; font-style: italic;">
+      <p style="font-size: 1.1rem;">Securing connection and initializing digital banking portal...</p>
+    </div>
+  }
+
+  @else {
+
+    <div style="border-bottom: 2px solid #eaeded; padding-bottom: 15px; margin-bottom: 30px;">
+      <h1 style="color: #2c3e50; margin: 0; font-size: 2rem;">Global Banking Portal</h1>
+      <p style="color: #7f8c8d; margin: 5px 0 0 0;">Welcome back! <strong>{{user?.firstName}} {{user?.lastName}}</strong> Select an account to review transaction histories.</p>
+    </div>
 
     <div style="display: flex; gap: 25px; flex-wrap: wrap;">
 
-      @for (account of accounts; track account) {
+      @for (account of accounts; track account.accountNumber) {
         <div
           [routerLink]="['/account', account.accountNumber]"
           style="border: 1px solid #d5dbdb; padding: 25px; border-radius: 8px; cursor: pointer; width: 260px; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.03); transition: all 0.2s ease-in-out;"
@@ -30,9 +38,9 @@
           </div>
 
           <div style="font-size: 1.8rem; font-weight: 700; color: #2c3e50; margin-bottom: 5px;">
-            {{ account.balance.amount }}
+            {{ account.balance?.amount | number:'1.2-2' }}
             <span style="font-size: 1.2rem; font-weight: 500; color: #7f8c8d; margin-left: 3px;">
-              {{ account.balance.currency }}
+              {{ account.balance?.currency }}
             </span>
           </div>
 
@@ -48,4 +56,5 @@
 
     </div>
   }
+
 </div>
