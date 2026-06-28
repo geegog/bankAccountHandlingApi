@@ -1,61 +1,77 @@
-<div style="padding: 40px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 700px; margin: 0 auto;">
+<div class="transaction-container">
 
-  <a [routerLink]="['/account', transaction?.accountNumber]" style="color: #3498db; text-decoration: none; font-weight: bold;">
+  <a [routerLink]="['/account', transaction?.accountNumber]" class="back-link">
     &larr; Return to Account Activity Statements
   </a>
 
   @if (isLoading) {
-    <p style="padding-top: 40px; text-align: center; color: #7f8c8d; font-style: italic;">
+    <p class="loading-msg">
       Locating transaction record indices...
     </p>
-  } @else if (transaction) {
+  }
 
-    <div style="background: white; border: 1px solid #dcdde1; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 35px; margin-top: 20px;">
+  @else if (transaction) {
+    <div class="receipt-card">
 
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #f1f2f6; padding-bottom: 20px; margin-bottom: 25px;">
-        <div>
-          <h2 style="margin: 0; color: #2c3e50;">Transaction Receipt</h2>
-          <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: #7f8c8d;">Captured: {{ transaction.created | date:'medium' }}</p>
+      <div class="card-header">
+        <div class="header-titles">
+          <h2 class="receipt-title">Transaction Receipt</h2>
+          <p class="receipt-date">Captured: {{ transaction.created | date:'medium' }}</p>
         </div>
 
-        <span [style.background-color]="transaction.transactionType === 'CREDIT' ? '#e8f8f5' : '#fceae9'"
-              [style.color]="transaction.transactionType === 'CREDIT' ? '#117a65' : '#922b21'"
-              style="padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">
+        <span class="type-badge"
+              [class.credit]="transaction.transactionType === 'CREDIT'"
+              [class.debit]="transaction.transactionType === 'DEBIT'">
           {{ transaction.transactionType }}
         </span>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; font-size: 0.95rem;">
-        <div style="display: flex; justify-content: space-between;"><span style="color: #7f8c8d;">Reference ID</span><strong style="font-family: monospace;">{{ transaction.id }}</strong></div>
-        <div style="display: flex; justify-content: space-between;"><span style="color: #7f8c8d;">Source Account</span><strong>{{ transaction.accountNumber }}</strong></div>
-        <div style="display: flex; justify-content: space-between;"><span style="color: #7f8c8d;">Beneficiary/Target Account</span><strong>{{ transaction.targetAccountNumber || 'N/A' }}</strong></div>
-        <div style="display: flex; justify-content: space-between;"><span style="color: #7f8c8d;">Reference Note Memo</span><strong>{{ transaction.reference || 'No details provided' }}</strong></div>
+      <div class="meta-group">
+        <div class="meta-row">
+          <span class="meta-label">Reference ID</span>
+          <strong class="mono-text">{{ transaction.id }}</strong>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Source Account</span>
+          <strong>{{ transaction.accountNumber }}</strong>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Beneficiary/Target Account</span>
+          <strong>{{ transaction.targetAccountNumber || 'N/A' }}</strong>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Reference Note Memo</span>
+          <strong>{{ transaction.reference || 'No details provided' }}</strong>
+        </div>
 
         @if (transaction.transactionType === 'EXCHANGE') {
-          <div style="display: flex; justify-content: space-between;"><span style="color: #7f8c8d;">Conversion Rate Applied</span><strong>{{ transaction.exchangeRate }}</strong></div>
+          <div class="meta-row">
+            <span class="meta-label">Conversion Rate Applied</span>
+            <strong>{{ transaction.exchangeRate }}</strong>
+          </div>
         }
       </div>
 
-      <div style="background-color: #f8f9fa; border-radius: 6px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-        <span style="font-weight: bold; color: #7f8c8d; text-transform: uppercase; font-size: 0.85rem;">Statement Net Total</span>
-        <h2 style="margin: 0;" [style.color]="transaction.transactionType === 'CREDIT' ? '#27ae60' : '#c0392b'">
+      <div class="summary-banner">
+        <span class="summary-label">Statement Net Total</span>
+        <h2 class="summary-amount"
+            [class.credit]="transaction.transactionType === 'CREDIT'"
+            [class.debit]="transaction.transactionType === 'DEBIT'">
           {{ transaction.transactionType === 'CREDIT' ? '+' : '-' }}{{ transaction.value?.amount | number:'1.2-2' }} {{ transaction.value?.currency }}
         </h2>
       </div>
 
-      <button
-        (click)="exportToPdf()"
-        style="width: 100%; padding: 14px; background-color: #2c3e50; color: white; border: none; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.2s;"
-        onmouseover="this.style.backgroundColor='#34495e'"
-        onmouseout="this.style.backgroundColor='#2c3e50'"
-      >
+      <button (click)="exportToPdf()" class="pdf-btn">
         📥 Download PDF Summary Report
       </button>
 
     </div>
-  } @else {
-    <div style="background-color: #fceae9; border: 1px solid #922b21; padding: 20px; border-radius: 6px; color: #922b21; margin-top: 20px;">
+  }
+
+  @else {
+    <div class="error-box">
       <strong>Error:</strong> Unable to load requested transaction statement index profile details.
     </div>
   }
+
 </div>

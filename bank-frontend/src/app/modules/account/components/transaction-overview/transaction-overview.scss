@@ -1,0 +1,163 @@
+// src/app/modules/account/components/transaction-overview/transaction-overview.scss
+
+.transaction-container {
+  padding: 40px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 700px;
+  margin: 0 auto;
+
+  .back-link {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .loading-msg {
+    padding-top: 40px;
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+  }
+
+  // Invoice Receipt Box Layout
+  .receipt-card {
+    background: white;
+    border: 1px solid #dcdde1;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 35px;
+    margin-top: 20px;
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #f1f2f6;
+      padding-bottom: 20px;
+      margin-bottom: 25px;
+
+      .receipt-title {
+        margin: 0;
+        color: #2c3e50;
+      }
+
+      .receipt-date {
+        margin: 5px 0 0 0;
+        font-size: 0.85rem;
+        color: #7f8c8d;
+      }
+
+      // Semantic Badges
+      .type-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+
+        &.credit {
+          background-color: #e8f8f5;
+          color: #117a65;
+        }
+
+        &.debit {
+          background-color: #fceae9;
+          color: #922b21;
+        }
+      }
+    }
+
+    // Key-Value Grid Block
+    .meta-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+      font-size: 0.95rem;
+
+      .meta-row {
+        display: flex;
+        justify-content: space-between;
+        line-height: 1.4;
+
+        .meta-label {
+          color: #7f8c8d;
+        }
+
+        .mono-text {
+          font-family: monospace;
+          color: #2c3e50;
+        }
+
+        strong {
+          color: #2c3e50;
+        }
+      }
+    }
+
+    // Summary Highlight Row Banner
+    .summary-banner {
+      background-color: #f8f9fa;
+      border-radius: 6px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+
+      .summary-label {
+        font-weight: bold;
+        color: #7f8c8d;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+      }
+
+      .summary-amount {
+        margin: 0;
+        font-size: 1.5rem;
+
+        &.credit {
+          color: #27ae60;
+        }
+
+        &.debit {
+          color: #c0392b;
+        }
+      }
+    }
+
+    // Action Form Download Buttons
+    .pdf-btn {
+      width: 100%;
+      padding: 14px;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+
+      // Clean CSS Hover State (Replaces the old inline javascript event lines)
+      &:hover {
+        background-color: #34495e;
+      }
+    }
+  }
+
+  // System Core Exception Box
+  .error-box {
+    background-color: #fceae9;
+    border: 1px solid #922b21;
+    padding: 20px;
+    border-radius: 6px;
+    color: #922b21;
+    margin-top: 20px;
+    line-height: 1.5;
+  }
+}

@@ -1,0 +1,136 @@
+// src/app/modules/account/components/home/home.scss
+
+.home-container {
+  padding: 40px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1100px;
+  margin: 0 auto;
+
+  // Feedback State Scopes
+  .error-state {
+    padding: 40px;
+    text-align: center;
+    color: #7f8c8d;
+    margin-top: 10px;
+
+    .error-msg {
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+  }
+
+  .loading-state {
+    padding: 60px;
+    text-align: center;
+    color: #7f8c8d;
+    font-style: italic;
+
+    .loading-msg {
+      font-size: 1.1rem;
+    }
+  }
+
+  // Dashboard Headers
+  .header-section {
+    border-bottom: 2px solid #eaeded;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+
+    .header-title {
+      color: #2c3e50;
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .header-subtitle {
+      color: #7f8c8d;
+      margin: 5px 0 0 0;
+
+      strong {
+        color: #2c3e50;
+      }
+    }
+  }
+
+  // Layout Grid Mapping
+  .accounts-grid {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+
+    // Individual Interactive Account Cards
+    .account-card {
+      border: 1px solid #d5dbdb;
+      padding: 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 260px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+      transition: all 0.2s ease-in-out;
+
+      // Clean CSS Hover State (replaces old JS onmouseover/onmouseout attributes)
+      &:hover {
+        transform: translateY(-4px);
+        border-color: #3498db;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+
+        .account-name {
+          font-size: 0.85rem;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: #95a5a6;
+        }
+
+        .account-badge {
+          background-color: #ebf5fb;
+          color: #2980b9;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 0.75rem;
+          font-weight: bold;
+        }
+      }
+
+      .account-balance {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 5px;
+
+        .currency {
+          font-size: 1.2rem;
+          font-weight: 500;
+          color: #7f8c8d;
+          margin-left: 3px;
+        }
+      }
+
+      .view-details {
+        font-size: 0.85rem;
+        color: #3498db;
+        margin-top: 15px;
+        font-weight: 600;
+      }
+    }
+
+    // Database Unseeded Box Block
+    .empty-state {
+      background-color: #fdf2e9;
+      border: 1px solid #f5b041;
+      padding: 20px;
+      border-radius: 6px;
+      width: 100%;
+      color: #d35400;
+      line-height: 1.5;
+    }
+  }
+}

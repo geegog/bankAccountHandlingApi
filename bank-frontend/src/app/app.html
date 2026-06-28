@@ -1,9 +1,8 @@
 @if (authStatusService.errorMessage()) {
-  <div style="background-color: #fceae9; border-bottom: 2px solid #c0392b; color: #922b21; padding: 15px 30px; font-family: 'Segoe UI', Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 9999;">
-
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <span style="font-size: 1.3rem;">⚠️</span>
-      <span style="font-weight: 600; font-size: 0.95rem; line-height: 1.4;">
+  <div class="auth-error-banner">
+    <div class="banner-content">
+      <span class="banner-icon">⚠️</span>
+      <span class="banner-text">
         {{ authStatusService.errorMessage() }}
       </span>
     </div>

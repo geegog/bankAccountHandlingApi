@@ -1,55 +1,48 @@
-<div style="padding: 40px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1100px; margin: 0 auto;">
+<div class="home-container">
 
   @if (authStatusService.errorMessage()) {
-    <div style="padding: 40px; text-align: center; color: #7f8c8d; margin-top: 10px;">
-      <p style="font-size: 1.1rem; font-style: italic;">Please resolve the authentication error above to view your portal dashboard.</p>
+    <div class="error-state">
+      <p class="error-msg">Please resolve the authentication error above to view your portal dashboard.</p>
     </div>
   }
 
   @else if (isLoading) {
-    <div style="padding: 60px; text-align: center; color: #7f8c8d; font-style: italic;">
-      <p style="font-size: 1.1rem;">Securing connection and initializing digital banking portal...</p>
+    <div class="loading-state">
+      <p class="loading-msg">Securing connection and initializing digital banking portal...</p>
     </div>
   }
 
   @else {
 
-    <div style="border-bottom: 2px solid #eaeded; padding-bottom: 15px; margin-bottom: 30px;">
-      <h1 style="color: #2c3e50; margin: 0; font-size: 2rem;">Global Banking Portal</h1>
-      <p style="color: #7f8c8d; margin: 5px 0 0 0;">Welcome back! <strong>{{user?.firstName}} {{user?.lastName}}</strong> Select an account to review transaction histories.</p>
+    <div class="header-section">
+      <h1 class="header-title">Global Banking Portal</h1>
+      <p class="header-subtitle">
+        Welcome back! <strong>{{user?.firstName}} {{user?.lastName}}</strong> Select an account to review transaction histories.
+      </p>
     </div>
 
-    <div style="display: flex; gap: 25px; flex-wrap: wrap;">
+    <div class="accounts-grid">
 
       @for (account of accounts; track account.accountNumber) {
-        <div
-          [routerLink]="['/account', account.accountNumber]"
-          style="border: 1px solid #d5dbdb; padding: 25px; border-radius: 8px; cursor: pointer; width: 260px; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0,0,0,0.03); transition: all 0.2s ease-in-out;"
-          onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='#3498db'; this.style.boxShadow='0 6px 12px rgba(0,0,0,0.08)';"
-          onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='#d5dbdb'; this.style.boxShadow='0 4px 6px rgba(0,0,0,0.03)';"
-        >
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <span style="font-size: 0.85rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: #95a5a6;">
-             {{ account.accountName }}
-            </span>
-            <span style="background-color: #ebf5fb; color: #2980b9; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">
-              #{{ account.accountNumber }}
-            </span>
+        <div [routerLink]="['/account', account.accountNumber]" class="account-card">
+
+          <div class="card-header">
+            <span class="account-name">{{ account.accountName }}</span>
+            <span class="account-badge">#{{ account.accountNumber }}</span>
           </div>
 
-          <div style="font-size: 1.8rem; font-weight: 700; color: #2c3e50; margin-bottom: 5px;">
+          <div class="account-balance">
             {{ account.balance?.amount | number:'1.2-2' }}
-            <span style="font-size: 1.2rem; font-weight: 500; color: #7f8c8d; margin-left: 3px;">
-              {{ account.balance?.currency }}
-            </span>
+            <span class="currency">{{ account.balance?.currency }}</span>
           </div>
 
-          <div style="font-size: 0.85rem; color: #3498db; margin-top: 15px; font-weight: 600;">
+          <div class="view-details">
             View Statement Details &rarr;
           </div>
+
         </div>
       } @empty {
-        <div style="background-color: #fdf2e9; border: 1px solid #f5b041; padding: 20px; border-radius: 6px; width: 100%; color: #d35400;">
+        <div class="empty-state">
           <strong>No Active Accounts Found:</strong> Please verify that your Spring Boot local server is running and that data pre-seeding logic executed successfully.
         </div>
       }
