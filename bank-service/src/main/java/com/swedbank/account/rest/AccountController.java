@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -72,7 +71,7 @@ public class AccountController {
     }
 
     @GetMapping(value = "/all")
-    public ResponseEntity<Set<AccountDto>> getAllAccounts(
+    public ResponseEntity<List<AccountDto>> getAllAccounts(
             @AuthenticationPrincipal User user) {
         return ResponseEntity.ok(accountService.getAccountsByUserEmail(user.getUsername()));
     }

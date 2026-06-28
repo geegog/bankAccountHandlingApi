@@ -145,14 +145,14 @@ public class AccountService {
 
     }
 
-    public Set<AccountDto> getAccountsByUserEmail(String email) {
+    public List<AccountDto> getAccountsByUserEmail(String email) {
         var user = userService.getUserByEmail(email);
 
         var accounts = getAccountsByUser(user.getEmail());
 
         return accounts.stream()
                 .map(account -> modelMapper.map(account, AccountDto.class))
-                .collect(java.util.stream.Collectors.toSet());
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Transactional
