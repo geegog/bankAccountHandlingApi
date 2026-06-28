@@ -20,8 +20,8 @@
         </div>
 
         <span class="type-badge"
-              [class.credit]="transaction.transactionType === 'CREDIT'"
-              [class.debit]="transaction.transactionType === 'DEBIT'">
+              [class.credit]="transaction.transactionType === ETransactionType.CREDIT"
+              [class.debit]="transaction.transactionType === ETransactionType.DEBIT">
           {{ transaction.transactionType }}
         </span>
       </div>
@@ -44,7 +44,7 @@
           <strong>{{ transaction.reference || 'No details provided' }}</strong>
         </div>
 
-        @if (transaction.transactionType === 'EXCHANGE') {
+        @if (transaction.transactionType === ETransactionType.EXCHANGE) {
           <div class="meta-row">
             <span class="meta-label">Conversion Rate Applied</span>
             <strong>{{ transaction.exchangeRate }}</strong>
@@ -55,9 +55,9 @@
       <div class="summary-banner">
         <span class="summary-label">Statement Net Total</span>
         <h2 class="summary-amount"
-            [class.credit]="transaction.transactionType === 'CREDIT'"
-            [class.debit]="transaction.transactionType === 'DEBIT'">
-          {{ transaction.transactionType === 'CREDIT' ? '+' : '-' }}{{ transaction.value?.amount | number:'1.2-2' }} {{ transaction.value?.currency }}
+            [class.credit]="transaction.transactionType === ETransactionType.CREDIT"
+            [class.debit]="transaction.transactionType === ETransactionType.DEBIT">
+          {{ transaction.transactionType === ETransactionType.CREDIT ? '+' : '-' }}{{ transaction.value?.amount | number:'1.2-2' }} {{ transaction.value?.currency }}
         </h2>
       </div>
 

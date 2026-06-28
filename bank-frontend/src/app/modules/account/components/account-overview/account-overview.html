@@ -35,9 +35,9 @@
               <td class="cell-desc">{{ tx.reference || '' }}</td>
 
               <td class="cell-amount"
-                  [class.credit]="tx.transactionType === 'CREDIT'"
-                  [class.debit]="tx.transactionType === 'DEBIT'">
-                {{ tx.transactionType === 'CREDIT' ? '+' : '-' }}{{ tx.value.amount }}
+                  [class.credit]="tx.transactionType === ETransactionType.CREDIT"
+                  [class.debit]="tx.transactionType === ETransactionType.DEBIT">
+                {{ tx.transactionType === ETransactionType.CREDIT ? '+' : '-' }}{{ tx.value.amount }}
               </td>
             </tr>
           }

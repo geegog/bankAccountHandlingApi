@@ -2,8 +2,9 @@ import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angu
 import { CommonModule, DatePipe, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Transaction } from '../../../../core/services/transaction';
-import { ITransaction } from '../../../../core/services/account';
 import { jsPDF } from 'jspdf';
+import { ITransaction } from '../../../../core/models/transaction';
+import { ETransactionType } from '../../enums/transaction-type';
 
 @Component({
   selector: 'app-transaction-overview',
@@ -25,15 +26,13 @@ export class TransactionOverview implements OnInit {
   isLoading = true;
 
   ngOnInit() {
-    // 1. Capture the unique transaction ID string from the active URL path
     this.transactionId = this.route.snapshot.paramMap.get('id') || '';
 
-    // 2. Load the transaction profile metrics
     this.transactionService.getTransactionDetails(this.transactionId).subscribe({
       next: (data) => {
         this.transaction = data;
         this.isLoading = false;
-        this.cdr.detectChanges(); // Sync view layout safely
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading transaction profile details:', err);
@@ -43,19 +42,16 @@ export class TransactionOverview implements OnInit {
     });
   }
 
-  // 3. Method to build and trigger the *.pdf download report
   exportToPdf() {
     if (!this.transaction || !isPlatformBrowser(this.platformId)) return;
 
-    // Instantiate a standard default blank page doc model
     const doc = new jsPDF();
 
     const formattedDate = this.datePipe.transform(this.transaction.created, 'medium') || '';
 
-    // Add Branding / Header Title
     doc.setFont('Helvetica', 'bold');
     doc.setFontSize(22);
-    doc.setTextColor(44, 62, 80); // Deep Blue corporate theme accent
+    doc.setTextColor(44, 62, 80);
     doc.text('GLOBAL BANKING PORTAL', 20, 25);
 
     doc.setFont('Helvetica', 'normal');
@@ -63,11 +59,9 @@ export class TransactionOverview implements OnInit {
     doc.setTextColor(127, 140, 141);
     doc.text('Official Transaction Summary Receipt Statement', 20, 32);
 
-    // Draw an elegant divider line separating header from transaction metrics
     doc.setDrawColor(220, 221, 225);
     doc.line(20, 38, 190, 38);
 
-    // Document Data Matrix Rows
     doc.setFontSize(12);
     doc.setTextColor(44, 62, 80);
 
@@ -77,34 +71,32 @@ export class TransactionOverview implements OnInit {
       doc.text(label, 20, currentY);
       doc.setFont('Helvetica', 'normal');
       doc.text(value, 75, currentY);
-      currentY += 12; // Advance cursor position down vertically
+      currentY += 12;
     };
 
     addRow('Transaction ID:', this.transaction.id);
     addRow('Execution Timestamp:', formattedDate);
-    addRow('Transaction Type:', this.transaction.transactionType);
+    addRow('Transaction Type:', this.transaction.transactionType.toString());
     addRow('Source Account Number:', this.transaction.accountNumber);
     addRow('Target Account Number:', this.transaction.targetAccountNumber || 'N/A');
     addRow('Reference Memo:', this.transaction.reference || 'No memo attachment reference found.');
 
-    if (this.transaction.transactionType === 'EXCHANGE') {
+    if (this.transaction.transactionType === ETransactionType.EXCHANGE) {
       addRow('Exchange Conversion Rate:', this.transaction.exchangeRate || '1.0');
     }
 
-    // Divider for Totals section
     doc.line(20, currentY, 190, currentY);
     currentY += 15;
 
-    // Bold Summary Statement Amount Highlights
     doc.setFont('Helvetica', 'bold');
     doc.setFontSize(16);
     doc.text('Transaction Net Total Value:', 20, currentY);
 
-    // Show positive sign if CREDIT, minus sign if DEBIT
-    const sign = this.transaction.transactionType === 'CREDIT' ? '+' : '-';
+    const sign = this.transaction.transactionType === ETransactionType.CREDIT ? '+' : '-';
     doc.text(`${sign}${this.transaction.value?.amount} ${this.transaction.value?.currency}`, 110, currentY);
 
-    // 4. File-saver trigger prompt delivered straight to user browser downloads directory
     doc.save(`Receipt-Tx-${this.transaction.id.substring(0, 8)}.pdf`);
   }
+
+  protected readonly ETransactionType = ETransactionType;
 }

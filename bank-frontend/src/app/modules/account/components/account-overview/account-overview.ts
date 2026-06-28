@@ -8,10 +8,15 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { Account, IBankAccount, ITransaction } from '../../../../core/services/account';
+import {
+  Account,
+} from '../../../../core/services/account';
 import { Transaction } from '../../../../core/services/transaction';
 
 import { Chart, registerables } from 'chart.js';
+import { IBankAccount } from '../../../../core/models/account';
+import { ITransaction } from '../../../../core/models/transaction';
+import { ETransactionType } from '../../enums/transaction-type';
 Chart.register(...registerables);
 
 @Component({
@@ -101,12 +106,10 @@ export class AccountOverview implements OnInit {
       );
       const balancePoints = chronologicalData.map((tx) => tx.balance?.amount || 0);
 
-      // If a chart instance already exists, destroy it
       if (this.chartInstance) {
         this.chartInstance.destroy();
       }
 
-      // Search for the canvas element now that the browser has definitely finished drawing it
       const ctx = document.getElementById('balanceChart') as HTMLCanvasElement;
 
       if (!ctx) {
@@ -114,7 +117,6 @@ export class AccountOverview implements OnInit {
         return;
       }
 
-      // Draw the chart safely
       this.chartInstance = new Chart(ctx, {
         type: 'line',
         data: {
@@ -153,4 +155,6 @@ export class AccountOverview implements OnInit {
       this.loadNextPage();
     }
   }
+
+  protected readonly ETransactionType = ETransactionType
 }

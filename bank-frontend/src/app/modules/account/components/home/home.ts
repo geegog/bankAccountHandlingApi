@@ -1,8 +1,10 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { Account, IBankAccount, IUser } from '../../../../core/services/account';
+import { Account } from '../../../../core/services/account';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthStatus } from '../../../../core/services/auth-status';
+import { IBankAccount } from '../../../../core/models/account';
+import { IUser } from '../../../../core/models/user';
 
 @Component({
   selector: 'app-home',
