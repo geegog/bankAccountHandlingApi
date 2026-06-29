@@ -2,7 +2,12 @@
 
   <a routerLink="/home" class="back-link">&larr; Back to My Accounts</a>
 
-  @if (account) {
+  @if (isLoading) {
+    <p class="loading-msg">
+      Locating transaction record indices...
+    </p>
+  }
+  @else if (account) {
     <div class="account-banner">
       <h2 class="banner-subtitle">Account Overview #{{ account.accountNumber }}</h2>
       <h1 class="banner-title">
@@ -57,6 +62,8 @@
       }
     </div>
   } @else {
-    <p class="fallback-loading">Loading account file summary data...</p>
+    <div class="error-box">
+      <strong>Error:</strong> Unable to load requested account details.
+    </div>
   }
 </div>

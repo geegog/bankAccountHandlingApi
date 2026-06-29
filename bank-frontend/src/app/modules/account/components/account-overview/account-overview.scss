@@ -6,6 +6,16 @@
   max-width: 800px;
   margin: 0 auto;
 
+  .error-box {
+    background-color: #fceae9;
+    border: 1px solid #922b21;
+    padding: 20px;
+    border-radius: 6px;
+    color: #922b21;
+    margin-top: 20px;
+    line-height: 1.5;
+  }
+
   .back-link {
     color: #EE7200;
     text-decoration: none;

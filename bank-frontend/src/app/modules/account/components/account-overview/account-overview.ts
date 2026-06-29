@@ -39,6 +39,7 @@ export class AccountOverview implements OnInit {
   accountId!: number;
   account?: IBankAccount;
   transactions: ITransaction[] = [];
+  isLoading = true;
 
   currentPage = 0;
   pageSize = 10;
@@ -53,9 +54,11 @@ export class AccountOverview implements OnInit {
     this.accountService.getAccountDetails(this.accountId).subscribe({
       next: (data) => {
         this.account = data;
+        this.isLoading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
+        this.isLoading = false;
         this.cdr.detectChanges();
         console.error('Error fetching account details:', err);
       },
@@ -94,7 +97,6 @@ export class AccountOverview implements OnInit {
   }
 
   updateBalanceChart() {
-
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
@@ -156,5 +158,5 @@ export class AccountOverview implements OnInit {
     }
   }
 
-  protected readonly ETransactionType = ETransactionType
+  protected readonly ETransactionType = ETransactionType;
 }
