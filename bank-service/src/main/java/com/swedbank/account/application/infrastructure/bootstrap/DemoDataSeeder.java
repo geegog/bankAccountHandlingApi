@@ -45,7 +45,9 @@ public class DemoDataSeeder {
             seedRequest.setUser(buildTestUser());
             seedRequest.setCreateAccounts(List.of(
                     buildAccountPayload("Checking USD", "USD"),
-                    buildAccountPayload("Savings EUR", "EUR")
+                    buildAccountPayload("Savings EUR", "EUR"),
+                    buildAccountPayload("Savings SEK", "SEK"),
+                    buildAccountPayload("Savings VND", "VND")
             ));
 
             var responseEntity = accountController.createUserAccount(seedRequest);
@@ -56,7 +58,12 @@ public class DemoDataSeeder {
 
                 String primaryAccountNumber = createdAccounts.get(0).getAccountNumber();
                 String secondaryAccountNumber = createdAccounts.get(1).getAccountNumber();
-                executeInitialDeposit(primaryAccountNumber);
+                String sekAccountNumber = createdAccounts.get(2).getAccountNumber();
+                String vndAccountNumber = createdAccounts.get(3).getAccountNumber();
+                executeInitialDeposit(primaryAccountNumber, "USD", "2750");
+                executeInitialDeposit(secondaryAccountNumber, "EUR", "250");
+                executeInitialDeposit(sekAccountNumber, "SEK", "35000.34");
+                executeInitialDeposit(vndAccountNumber, "VND", "5000000000");
                 executeWithdrawals(primaryAccountNumber);
                 executeExchange(primaryAccountNumber, secondaryAccountNumber);
             }
@@ -89,17 +96,17 @@ public class DemoDataSeeder {
         return request;
     }
 
-    private void executeInitialDeposit(String accountNumber) {
+    private void executeInitialDeposit(String accountNumber, String currencyCode, String amount) {
         AccountTransactionRequest deposit = new AccountTransactionRequest();
         deposit.setAccountNumber(accountNumber);
         deposit.setValue(MoneyDto.builder()
-                .amount(new BigDecimal("2500.00"))
-                .currency(Currency.getInstance("USD"))
+                .amount(new BigDecimal(amount))
+                .currency(Currency.getInstance(currencyCode))
                 .build());
         deposit.setReference("Money to spend on everything");
 
         accountController.addMoneyToAccount(deposit, getAuthenticatedUser());
-        log.info("💰 Successfully deposited startup credit of $2500.00 to account: {}", accountNumber);
+        log.info("💰 Successfully deposited startup credit of {} {} to account: {}", amount, currencyCode, accountNumber);
     }
 
     private void executeWithdrawals(String accountNumber) {
