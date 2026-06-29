@@ -11,7 +11,7 @@
     <div class="account-banner">
       <h2 class="banner-subtitle">Account Overview #{{ account.accountNumber }}</h2>
       <h1 class="banner-title">
-        {{ account.balance.amount }} <span class="currency">{{ account.balance.currency }}</span>
+        {{ account.balance.amount | number:'1.2-2' }} <span class="currency">{{ account.balance.currency }}</span>
       </h1>
     </div>
 
@@ -42,7 +42,7 @@
               <td class="cell-amount"
                   [class.credit]="tx.transactionType === ETransactionType.CREDIT"
                   [class.debit]="tx.transactionType === ETransactionType.DEBIT">
-                {{ tx.transactionType === ETransactionType.CREDIT ? '+' : '-' }}{{ tx.value.amount }}
+                {{ tx.transactionType === ETransactionType.CREDIT ? '+' : '-' }}{{ tx.value.amount | number:'1.2-2' }}
               </td>
             </tr>
           }

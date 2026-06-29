@@ -102,9 +102,10 @@ export class AccountOverview implements OnInit {
     }
 
     setTimeout(() => {
+      const currencyLabel = this.account?.balance?.currency || '';
       const chronologicalData = [...this.transactions].reverse();
       const chartLabels = chronologicalData.map(
-        (tx) => this.datePipe.transform(tx.created, 'shortDate') || '',
+        (tx) => this.datePipe.transform(tx.created, 'short') || '',
       );
       const balancePoints = chronologicalData.map((tx) => tx.balance?.amount || 0);
 
@@ -125,7 +126,7 @@ export class AccountOverview implements OnInit {
           labels: chartLabels,
           datasets: [
             {
-              label: `Balance History (${this.account?.balance?.currency})`,
+              label: `Balance History (${currencyLabel})`,
               data: balancePoints,
               borderColor: '#EE7200',
               backgroundColor: 'rgba(238, 114, 0, 0.05)',
@@ -138,6 +139,16 @@ export class AccountOverview implements OnInit {
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: (context) => {
+                  const value = context.parsed.y;
+                  return ` Balance: ${value?.toFixed(2)} ${currencyLabel}`;
+                },
+              },
+            },
+          },
           scales: {
             y: { beginAtZero: false },
           },
